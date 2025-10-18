@@ -3,7 +3,7 @@ import Image from "next/image";
 import AnimatedParticles from "./AnimatedParticles";
 
 const Background: FC = () => (
-  <div className="absolute inset-0 -z-10">
+  <div className="absolute inset-0 z-0 overflow-hidden">
     <Image
       src="/bg.webp"
       alt="Cinematic background"
