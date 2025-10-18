@@ -1,8 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { motion, useAnimation } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../services/supabaseClient";
 import Background from "../components/Background";
+import { friendlyAuthError } from "../../utils/friendlyAuthError";
+import { toast } from "sonner";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
 
 const SignInPage: React.FC = () => {
   const router = useRouter();
@@ -10,6 +15,8 @@ const SignInPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [shake, setShake] = useState(false);
+  const shakeControls = useAnimation();
 
   useEffect(() => {
     const checkSession = async () => {
@@ -32,7 +39,12 @@ const SignInPage: React.FC = () => {
     setLoading(false);
 
     if (signInError) {
-      setError(signInError.message);
+      const msg = friendlyAuthError(signInError, "sign_in");
+      setError(msg);
+      toast.error("Sign in failed", { description: msg });
+      setShake(true);
+      shakeControls.start({ x: [0, -8, 8, -6, 6, -3, 3, 0] }, { type: "tween", duration: 0.45 });
+      setTimeout(() => setShake(false), 600);
       return;
     }
 
@@ -40,42 +52,45 @@ const SignInPage: React.FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center px-6 overflow-x-hidden">
+    <motion.div className="relative min-h-screen w-full flex items-center justify-center px-6 overflow-x-hidden" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
       <Background />
-      <div className="relative z-10 w-full max-w-md bg-gray-900/90 border border-gray-700 rounded-xl shadow-2xl p-8">
-        <h1 className="text-2xl font-bold text-white mb-1 text-center">Sign In</h1>
-        <p className="text-gray-300 text-sm mb-6 text-center">
-          Log in with your email and password
-        </p>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            className="px-4 py-2 rounded bg-gray-800 border border-gray-700 text-white focus:outline-none"
-            required
-            autoFocus
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="px-4 py-2 rounded bg-gray-800 border border-gray-700 text-white focus:outline-none"
-            required
-          />
-          {error && (
-            <div className="text-red-400 text-sm text-center" role="alert">{error}</div>
-          )}
+      <motion.div className="relative z-10 w-full max-w-md bg-gray-900/90 border border-gray-700 rounded-xl shadow-2xl p-8" initial={{ opacity: 0, y: 16, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}>
+        <motion.div animate={shakeControls}>
+          <h1 className="text-2xl font-bold text-white mb-1 text-center">Sign In</h1>
+          <p className="text-gray-300 text-sm mb-6 text-center">
+            Log in with your email and password
+          </p>
+        </motion.div>
+        <motion.form onSubmit={handleSubmit} className="flex flex-col gap-4" variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06, delayChildren: 0.05 } } }} initial="hidden" animate="show">
+          <motion.div variants={{ hidden: { opacity: 0, y: 4 }, show: { opacity: 1, y: 0 } }}>
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              className={`${error ? "border-red-500/50 animate-inputPulse" : ""}`}
+              aria-invalid={Boolean(error)}
+              required
+              autoFocus
+            />
+          </motion.div>
+          <motion.div variants={{ hidden: { opacity: 0, y: 4 }, show: { opacity: 1, y: 0 } }}>
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              className={`${error ? "border-red-500/50 animate-inputPulse" : ""}`}
+              aria-invalid={Boolean(error)}
+              required
+            />
+          </motion.div>
           <div className="flex flex-col sm:flex-row gap-3">
-            <button
-              type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded transition-colors duration-200 disabled:opacity-50 flex-1"
-              disabled={loading}
-            >
-              {loading ? "Signing In..." : "Sign In"}
-            </button>
+            <motion.div variants={{ hidden: { opacity: 0, y: 4 }, show: { opacity: 1, y: 0 } }} whileHover={{ scale: 1.005 }} whileTap={{ scale: 0.98 }} className="flex-1">
+              <Button type="submit" disabled={loading} className={`${loading ? "animate-pulse cursor-wait" : ""} w-full`}>
+                {loading ? "Signing In..." : "Sign In"}
+              </Button>
+            </motion.div>
             <a
               href="/sign-up"
               className="flex-1 text-center bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-semibold py-2 rounded transition-colors duration-200 border border-neutral-300"
@@ -83,9 +98,9 @@ const SignInPage: React.FC = () => {
               Sign Up
             </a>
           </div>
-        </form>
-      </div>
-    </div>
+        </motion.form>
+      </motion.div>
+    </motion.div>
   );
 };
 

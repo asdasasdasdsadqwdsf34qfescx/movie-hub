@@ -2,14 +2,16 @@
 
 import React from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
+import { Button } from './ui/button';
 
 const ThemeToggle = () => {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <button
+    <Button
       onClick={toggleTheme}
-      className="fixed top-6 right-6 z-50 p-3 rounded-full 
+      variant="ghost"
+      className="fixed top-6 right-6 z-50 p-3 rounded-full
         bg-white/10 backdrop-blur-md border border-white/20
         hover:bg-white/20 transition-all duration-300
         hover:scale-110 active:scale-95"
@@ -24,7 +26,7 @@ const ThemeToggle = () => {
           <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
         </svg>
       )}
-    </button>
+    </Button>
   );
 };
 
