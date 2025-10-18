@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import {
   Folder,
   BarChart3,
-  Plus,
   ChevronUp,
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";

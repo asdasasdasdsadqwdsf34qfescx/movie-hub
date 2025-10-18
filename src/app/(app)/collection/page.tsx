@@ -220,11 +220,6 @@ export default function Collection() {
     }
   };
 
-  const emptyState = useMemo(
-    () => !loading && movies.length === 0,
-    [loading, movies.length]
-  );
-
   return (
     <div className="w-full min-h-screen pl-2 pr-8 py-4 sm:pl-4 sm:pr-12 lg:pl-6 lg:pr-16 overflow-x-hidden">
             <h1 className="text-4xl font-bold mb-4 ">Collection</h1>
