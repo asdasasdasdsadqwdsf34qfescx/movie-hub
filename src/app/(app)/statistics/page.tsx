@@ -26,7 +26,6 @@ export default function Statistics() {
         <p className="font-medium">🚧 Under Development</p>
         <p className="text-sm opacity-80 mt-1">This page is currently under development. Features will be available soon.</p>
       </div>
-      <p className="text-lg opacity-70 mb-8">Overview of your usage metrics and trends.</p>
     </div>
   );
 }
