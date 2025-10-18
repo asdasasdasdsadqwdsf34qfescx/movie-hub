@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import toast, { ToastOptions } from "react-hot-toast";
 import React from "react";
+import { AlertCircle, CheckCircle2, X } from "lucide-react";
 
 const baseOptions: ToastOptions = {
   duration: 4500,
@@ -9,11 +10,7 @@ const baseOptions: ToastOptions = {
 };
 
 function ErrorIcon() {
-  return (
-    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
-      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 8a1 1 0 000 2v4a1 1 0 102 0V9a1 1 0 00-1-1H9z" clipRule="evenodd" />
-    </svg>
-  );
+  return <AlertCircle className="h-5 w-5 text-red-400" />;
 }
 
 export function showErrorToast(message: string, title = "Something went wrong") {
@@ -39,7 +36,7 @@ export function showErrorToast(message: string, title = "Something went wrong") 
           className="ml-2 text-gray-400 hover:text-white transition-colors"
           aria-label="Dismiss notification"
         >
-          ×
+          <X className="h-5 w-5" />
         </button>
       </div>
       <div className="toast-progress" />
@@ -60,9 +57,7 @@ export function showSuccessToast(message: string, title = "Success") {
       data-type="success"
     >
       <div className="flex items-start gap-3">
-        <svg className="h-5 w-5 text-emerald-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
-          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.707a1 1 0 00-1.414-1.414L9 10.172 7.707 8.879A1 1 0 106.293 10.293l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-        </svg>
+        <CheckCircle2 className="h-5 w-5 text-emerald-400" />
         <div className="min-w-0">
           <p className="toast-title toast-title-success">{title}</p>
           <p className="toast-message toast-message-success" title={message}>{message}</p>
@@ -72,7 +67,7 @@ export function showSuccessToast(message: string, title = "Success") {
           className="ml-2 text-gray-300 hover:text-white transition-colors"
           aria-label="Dismiss notification"
         >
-          ×
+          <X className="h-5 w-5" />
         </button>
       </div>
       <div className="toast-progress toast-progress-success" />

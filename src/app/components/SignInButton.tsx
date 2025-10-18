@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import { ArrowRight } from "lucide-react";
 
 interface SignInButtonProps {
   onClick: () => void;
@@ -11,9 +12,7 @@ const SignInButton: FC<SignInButtonProps> = ({ onClick }) => (
   >
     <span className="relative z-10 flex items-center">
       Sign In
-      <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-      </svg>
+      <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
     </span>
     <span className="absolute inset-0 bg-gradient-to-r from-[#ff758f] to-[#e63946] opacity-0 group-hover:opacity-100 rounded-lg transition-opacity duration-300" />
   </button>

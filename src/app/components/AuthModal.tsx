@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import { X } from "lucide-react";
 import { motion, useAnimation } from "framer-motion";
 import { friendlyAuthError } from "../../utils/friendlyAuthError";
 import { toast } from "sonner";
@@ -58,10 +59,10 @@ const AuthModal: FC<AuthModalProps> = ({ open, onClose, onSignIn, onSignUp }) =>
           <motion.div animate={shakeControls} className="w-full">
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-light transition-colors duration-200 focus:outline-none"
+              className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors duration-200 focus:outline-none"
               aria-label="Close"
             >
-              &times;
+              <X className="h-5 w-5" />
             </button>
             <h3 className="text-xl font-bold text-white mb-4">{mode === 'signin' ? 'Sign In' : 'Sign Up'}</h3>
             <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
