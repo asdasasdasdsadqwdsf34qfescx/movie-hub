@@ -22,7 +22,7 @@ const SignInPage: React.FC = () => {
     const checkSession = async () => {
       const { data } = await supabase.auth.getSession();
       if (data.session) {
-        router.replace("/home");
+        router.replace("/collection");
       }
     };
     checkSession();
@@ -48,7 +48,7 @@ const SignInPage: React.FC = () => {
       return;
     }
 
-    router.replace("/home");
+    router.replace("/collection");
   };
 
   return (

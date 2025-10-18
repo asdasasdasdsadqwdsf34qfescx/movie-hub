@@ -28,7 +28,7 @@ const SignUpPage: React.FC = () => {
   useEffect(() => {
     const checkSession = async () => {
       const { data } = await supabase.auth.getSession();
-      if (data.session) router.replace("/home");
+      if (data.session) router.replace("/collection");
     };
     checkSession();
   }, [router]);
@@ -78,7 +78,7 @@ const SignUpPage: React.FC = () => {
     }
 
     if (data.session) {
-      router.replace("/home");
+      router.replace("/collection");
     } else {
       setInfo("Account created. Please check your email to confirm your address.");
     }
