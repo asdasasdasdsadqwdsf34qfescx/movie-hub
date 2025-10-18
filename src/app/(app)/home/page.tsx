@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/services/supabaseClient";
 import Image from "next/image";
@@ -81,9 +81,12 @@ const Home = () => {
     };
   }, [userId]);
 
-const Row = ({ title, items }: { title: string; items: MovieRow[] }) => {
+const Row = React.memo(({ title, items }: { title: string; items: MovieRow[] }) => {
+    const { expanded } = useSidebar();
+    
     if (!items.length) return null;
-    const renderCard = (m: MovieRow, key: string | number) => (
+    
+    const renderCard = useCallback((m: MovieRow, key: string | number) => (
       <div
         key={key}
         className="min-w-[160px] max-w-[160px] rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 overflow-hidden"
@@ -104,12 +107,19 @@ const Row = ({ title, items }: { title: string; items: MovieRow[] }) => {
           </div>
         </div>
       </div>
-    );
+    ), []);
 
-    const isSingle = items.length === 1;
-    const content = items.length > 1 ? [...items, ...items] : items;
-    const { expanded } = useSidebar();
-    const leftPad = expanded ? "lg:pl-[280px]" : "lg:pl-[136px]";
+    const isSingle = useMemo(() => items.length === 1, [items.length]);
+    
+    const content = useMemo(() => 
+      items.length > 1 ? [...items, ...items] : items, 
+      [items]
+    );
+    
+    const leftPad = useMemo(() => 
+      expanded ? "lg:pl-[280px]" : "lg:pl-[136px]", 
+      [expanded]
+    );
 
     return (
       <div>
@@ -131,7 +141,7 @@ const Row = ({ title, items }: { title: string; items: MovieRow[] }) => {
         </div>
       </div>
     );
-  };
+  });
 
   return (
    <div className="pt-4 mx-auto">
