@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Menu, X, Folder, BarChart3, LogOut } from "lucide-react";
+import { Menu, X, Folder, BarChart3, LogOut, Home as HomeIcon } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useRouter, usePathname } from "next/navigation";
 import { supabase } from "@/services/supabaseClient";
@@ -72,8 +72,15 @@ export default function MobileMenu() {
 
               <nav className="px-2 py-2">
                 <button
+                  onClick={() => go("/home")}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition ${pathname?.startsWith("/home") ? "bg-white/10 border border-white/20" : "hover:bg-white/5"}`}
+                >
+                  <HomeIcon className="w-5 h-5" />
+                  <span>Home</span>
+                </button>
+                <button
                   onClick={() => go("/collection")}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition ${pathname?.startsWith("/collection") ? "bg-white/10 border border-white/20" : "hover:bg-white/5"}`}
+                  className={`mt-1 w-full flex items-center gap-3 px-4 py-3 rounded-xl transition ${pathname?.startsWith("/collection") ? "bg-white/10 border border-white/20" : "hover:bg-white/5"}`}
                 >
                   <Folder className="w-5 h-5" />
                   <span>Collection</span>

@@ -6,6 +6,7 @@ import {
   Folder,
   BarChart3,
   ChevronUp,
+  Home as HomeIcon,
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -74,6 +75,11 @@ const Sidebar = () => {
   };
 
   const menuItems: MenuItem[] = [
+    {
+      id: "home",
+      label: "Home",
+      Icon: HomeIcon,
+    },
     {
       id: "collection",
       label: "Collection",

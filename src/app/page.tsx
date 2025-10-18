@@ -27,7 +27,7 @@ const Home: FC = () => {
           <SignInButton onClick={() => router.push('/sign-in')} />
           {isAuthenticated && !loading && (
             <button
-              onClick={() => router.push('/home')}
+              onClick={() => router.push('/collection')}
               className="group relative px-8 py-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden transition-all duration-300 hover:bg-white/10 hover:scale-105 hover:border-white/20"
             >
               <span className="relative z-10 text-white font-medium">

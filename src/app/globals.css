@@ -1,1 +1,12 @@
 @import "tailwindcss";
+
+/* Infinite horizontal auto-scroll when overflow (Home carousels) */
+.auto-marquee { overflow: hidden; }
+.auto-marquee__inner { display: flex; width: max-content; animation: auto-marquee-scroll 40s linear infinite; will-change: transform; }
+@keyframes auto-marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (hover: hover) {
+  .auto-marquee:hover .auto-marquee__inner { animation-play-state: paused; }
+}

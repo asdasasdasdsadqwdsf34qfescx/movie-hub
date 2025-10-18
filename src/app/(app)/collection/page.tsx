@@ -10,7 +10,7 @@ import {
 } from "@/app/components/ui/dialog";
 import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Trash2, Eye, Heart, EyeOff } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -28,6 +28,7 @@ type MovieRow = {
   year?: number | null;
   runtime?: number | null;
   isFavorite?: boolean | null;
+  wantWatch?: boolean | null;
   watchedDates?: string[] | null;
   userId: string;
   imdbRating?: number | null;
@@ -63,6 +64,9 @@ export default function Collection() {
   const [filterGenre, setFilterGenre] = useState<string>("");
   const [filterYear, setFilterYear] = useState<string>("");
   const [filterRating, setFilterRating] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
   const currentYear = new Date().getFullYear();
   const yearOptions = Array.from({ length: currentYear - 1950 + 1 }, (_, i) => String(currentYear - i));
 
@@ -95,7 +99,7 @@ export default function Collection() {
       let q = supabase
         .from("movies")
         .select(
-          "id, created_at, name, poster, watchedCount, genres, year, runtime, isFavorite, watchedDates, userId, imdbRating, imdbVotes, released"
+          "id, created_at, name, poster, watchedCount, genres, year, runtime, isFavorite, wantWatch, watchedDates, userId, imdbRating, imdbVotes, released"
         )
         .eq("userId", userId);
 
@@ -110,6 +114,9 @@ export default function Collection() {
         const r = parseFloat(filterRating);
         if (Number.isFinite(r)) q = q.gte("imdbRating", r);
       }
+      if (debouncedSearch) {
+        q = q.ilike("name", `%${debouncedSearch}%`);
+      }
 
       const { data, error } = await q.order("created_at", { ascending: false });
       if (!active) return;
@@ -123,7 +130,14 @@ export default function Collection() {
     return () => {
       active = false;
     };
-  }, [userId, filterGenre, filterYear, filterRating]);
+  }, [userId, filterGenre, filterYear, filterRating, debouncedSearch]);
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      setDebouncedSearch(searchTerm.trim());
+    }, 400);
+    return () => clearTimeout(id);
+  }, [searchTerm]);
 
   useEffect(() => {
     if (!open) return;
@@ -202,6 +216,7 @@ export default function Collection() {
         year: yearNum,
         runtime: runtimeNum,
         isFavorite: false,
+        wantWatch: true,
         watchedCount: 0,
         watchedDates: [],
         userId,
@@ -216,7 +231,7 @@ export default function Collection() {
       const { data } = await supabase
         .from("movies")
         .select(
-          "id, created_at, name, poster, watchedCount, genres, year, runtime, isFavorite, watchedDates, userId, imdbRating, imdbVotes, released"
+          "id, created_at, name, poster, watchedCount, genres, year, runtime, isFavorite, wantWatch, watchedDates, userId, imdbRating, imdbVotes, released"
         )
         .eq("userId", userId)
         .order("created_at", { ascending: false });
@@ -244,15 +259,67 @@ export default function Collection() {
     }
   };
 
+  const toggleFavorite = async (m: MovieRow) => {
+    if (!m.id || !userId) return;
+    try {
+      setUpdatingId(m.id);
+      const { data, error } = await supabase
+        .from("movies")
+        .update({ isFavorite: !m.isFavorite })
+        .eq("id", m.id)
+        .eq("userId", userId)
+        .select();
+      if (error) throw error;
+      if (data && data[0]) {
+        const row = data[0] as Partial<MovieRow>;
+        setMovies((prev) => prev.map((x) => (x.id === m.id ? { ...x, ...row } : x)));
+      }
+    } catch {
+      // ignore
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const toggleWantWatch = async (m: MovieRow) => {
+    if (!m.id || !userId) return;
+    try {
+      setUpdatingId(m.id);
+      const { data, error } = await supabase
+        .from("movies")
+        .update({ wantWatch: !m.wantWatch })
+        .eq("id", m.id)
+        .eq("userId", userId)
+        .select();
+      if (error) throw error;
+      if (data && data[0]) {
+        const row = data[0] as Partial<MovieRow>;
+        setMovies((prev) => prev.map((x) => (x.id === m.id ? { ...x, ...row } : x)));
+      }
+    } catch {
+      // ignore
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
   return (
     <div className="w-full min-h-screen pl-2 py-4 sm:pl-4 sm:pr-12 lg:pl-6 lg:pr-16 overflow-x-hidden">
 
-      <motion.div 
+      <motion.div
         className={`mb-4 rounded-2xl border ${theme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-neutral-50 border-neutral-200'} p-4 sm:p-5`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.1 }}
       >
+        <div className="mb-3">
+          <Input
+            placeholder="Search in your collection"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={`${theme === 'dark' ? 'bg-neutral-900 text-white border-neutral-700 placeholder:text-neutral-400 focus:border-neutral-600 focus:ring-neutral-600/20' : 'bg-white text-neutral-800 border-neutral-300 placeholder:text-neutral-500 focus:border-blue-500 focus:ring-blue-500/20'}`}
+          />
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 min-w-0">
           <select
             value={filterGenre}
@@ -370,19 +437,44 @@ export default function Collection() {
             }}
             whileTap={{ scale: 0.98 }}
           >
-            <button
-              onClick={() => {
-                if (typeof m.id === "number") {
-                  setPendingDelete({ id: m.id, name: m.name });
-                  setConfirmOpen(true);
-                }
-              }}
-              disabled={deletingId === m.id}
-              className="absolute top-2 right-2 z-10 inline-flex items-center justify-center w-9 h-9 rounded-full bg-neutral-800/80 hover:bg-neutral-700/80 backdrop-blur-md border border-neutral-600/60 text-white transition disabled:opacity-60 disabled:cursor-not-allowed"
-              aria-label="Delete movie"
-            >
-              <Trash2 className="w-5 h-5" />
-            </button>
+            <div className="absolute top-2 right-2 z-10 flex flex-col gap-2">
+              <button
+                onClick={() => {
+                  if (typeof m.id === "number") {
+                    setPendingDelete({ id: m.id, name: m.name });
+                    setConfirmOpen(true);
+                  }
+                }}
+                disabled={deletingId === m.id}
+                className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-neutral-800/80 hover:bg-neutral-700/80 backdrop-blur-md border border-neutral-600/60 text-white transition disabled:opacity-60 disabled:cursor-not-allowed"
+                aria-label="Delete movie"
+              >
+                <Trash2 className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => toggleFavorite(m)}
+                disabled={updatingId === m.id}
+                className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-neutral-800/80 hover:bg-neutral-700/80 backdrop-blur-md border border-neutral-600/60 text-white transition disabled:opacity-60 disabled:cursor-not-allowed"
+                aria-label="Toggle favorite"
+                aria-pressed={m.isFavorite ? true : false}
+              >
+                <Heart className="w-5 h-5" fill={m.isFavorite ? 'currentColor' : 'none'} />
+              </button>
+              <button
+                onClick={() => toggleWantWatch(m)}
+                disabled={updatingId === m.id}
+                className={`inline-flex items-center justify-center w-9 h-9 rounded-full bg-neutral-800/80 hover:bg-neutral-700/80 backdrop-blur-md border border-neutral-600/60 text-white transition disabled:opacity-60 disabled:cursor-not-allowed ${m.wantWatch === false ? 'opacity-60' : ''}`}
+                aria-label="Toggle want to watch"
+                aria-pressed={m.wantWatch ? true : false}
+                title={m.wantWatch === false ? 'Not planned to watch' : 'Want to watch'}
+              >
+                {m.wantWatch === false ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
+              </button>
+            </div>
             {m.poster ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -402,6 +494,7 @@ export default function Collection() {
               <p className="opacity-60 text-xs sm:text-sm truncate">
                 {m.year ?? ""}
                 {m.runtime ? ` • ${m.runtime} min` : ""}
+                {typeof m.imdbRating === "number" ? ` • IMDb ${m.imdbRating.toFixed(1)}` : ""}
               </p>
             </div>
           </motion.div>
