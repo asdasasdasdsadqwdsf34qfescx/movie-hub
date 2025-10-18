@@ -3,14 +3,16 @@ import Image from "next/image";
 import AnimatedParticles from "./AnimatedParticles";
 
 const Background: FC = () => (
-  <div className="absolute inset-0 z-0 overflow-hidden">
+  <div className="absolute inset-0 z-0 overflow-hidden no-flicker">
     <Image
       src="/bg.webp"
       alt="Cinematic background"
       fill
       priority
       quality={100}
-      className="object-cover"
+      placeholder="blur"
+      blurDataURL="data:image/webp;base64,UklGRhIAAABXRUJQVlA4IAAAAADwAQCdASoIAAUAAUAmJQCdASoIAAQAAgA="
+      className="object-cover no-flicker"
     />
     <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-black/30" />
     <AnimatedParticles />

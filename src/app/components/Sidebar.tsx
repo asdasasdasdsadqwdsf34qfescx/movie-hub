@@ -20,11 +20,18 @@ const Sidebar = () => {
 
   useEffect(() => {
     let mounted = true;
+    function extractName(meta: unknown): string | undefined {
+      if (meta && typeof meta === 'object') {
+        const m = meta as { name?: unknown };
+        return typeof m.name === 'string' ? m.name : undefined;
+      }
+      return undefined;
+    }
     async function load() {
       try {
         const { data } = await supabase.auth.getSession();
         if (mounted) {
-          const metaName = (data.session?.user as any)?.user_metadata?.name as string | undefined;
+          const metaName = extractName(data.session?.user?.user_metadata as unknown);
           setUserDisplay(metaName || data.session?.user?.email || "");
         }
       } catch {
@@ -32,7 +39,7 @@ const Sidebar = () => {
       }
     }
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      const metaName = (session?.user as any)?.user_metadata?.name as string | undefined;
+      const metaName = extractName(session?.user?.user_metadata as unknown);
       setUserDisplay(metaName || session?.user?.email || "");
     });
     load();
@@ -101,7 +108,7 @@ const Sidebar = () => {
       className={`fixed left-4 top-4 bottom-4 h-auto ${isExpanded ? 'w-64' : 'w-[104px]'}
         ${colors.bg} border-[0.5px] rounded-[28px]
         backdrop-blur-[80px] shadow-[0_64px_64px_-32px_rgba(41,15,0,0.56)]
-        transition-all duration-300 ease-in-out z-50 flex flex-col overflow-y-auto overflow-x-hidden no-scrollbar pt-6`}
+        transition-all duration-300 ease-in-out z-50 flex flex-col overflow-y-auto overflow-x-hidden no-scrollbar pt-6 no-flicker`}
     >
 
       {/* User Header */}

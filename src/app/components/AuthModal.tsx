@@ -32,7 +32,7 @@ const AuthModal: FC<AuthModalProps> = ({ open, onClose, onSignIn, onSignUp }) =>
       } else {
         await onSignUp(email, password);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       const msg = friendlyAuthError(err, mode === 'signin' ? 'sign_in' : 'sign_up');
       setError(msg);
       toast.error(mode === 'signin' ? 'Sign in failed' : 'Sign up failed', { description: msg });

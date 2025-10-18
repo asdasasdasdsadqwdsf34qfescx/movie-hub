@@ -86,9 +86,10 @@ const SignUpPage: React.FC = () => {
   };
 
   return (
-    <motion.div className="relative min-h-screen w-full flex items-center justify-center px-6 overflow-x-hidden" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
+    <motion.div className="relative min-h-screen w-full flex items-center justify-center px-6 overflow-x-hidden no-flicker">
       <Background />
-      <motion.div className="relative z-10 w-full max-w-md bg-gray-900/90 border border-gray-700 rounded-xl shadow-2xl p-8" initial={{ opacity: 0, y: 16, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}>
+      <motion.div className="relative z-10 w-full max-w-md bg-gray-900/90 border border-gray-700 rounded-xl shadow-2xl p-8 no-flicker" initial={{ opacity: 0, y: 16, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}>
+        <Link href="/" aria-label="Close and go home" className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-light transition-colors duration-200">&times;</Link>
         <motion.div animate={shakeControls}>
           <h1 className="text-2xl font-bold text-white mb-1 text-center">Sign Up</h1>
           <p className="text-gray-300 text-sm mb-6 text-center">Create your account</p>

@@ -20,6 +20,7 @@ html, body {
   font-family: var(--font-inter), -apple-system, Roboto, Helvetica, sans-serif;
   overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
+  color-scheme: light dark;
 }
 
 @keyframes float { 0% { transform: translateY(0) translateX(0);} 50% { transform: translateY(-20px) translateX(10px);} 100% { transform: translateY(0) translateX(0);} }
@@ -51,6 +52,11 @@ html, body {
 .toast-progress { height: 2px; background: linear-gradient(90deg, #fb7185, #ef4444, #b91c1c); margin-top: 8px; border-radius: 9999px; animation: toast-progress 4.5s linear forwards; transform-origin: left; }
 .toast-progress-success { background: linear-gradient(90deg, #34d399, #10b981, #059669); }
 @keyframes toast-progress { from { width: 100%; } to { width: 0%; } }
+
+/* Anti-flicker utilities */
+.no-flicker { backface-visibility: hidden; transform: translateZ(0); will-change: transform; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+* { -webkit-tap-highlight-color: transparent; }
+::view-transition-old(root), ::view-transition-new(root) { background: transparent !important; }
 
 @media (prefers-reduced-motion: reduce) {
   .animate-fadeIn, .animate-scaleIn, .auth-page-fade, .auth-card-entrance, .animate-shake, .animate-inputPulse { animation: none !important; }
