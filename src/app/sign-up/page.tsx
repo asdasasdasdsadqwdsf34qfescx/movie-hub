@@ -23,8 +23,7 @@ const SignUpPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [fieldError, setFieldError] = useState<"name" | "password" | "confirmPassword" | null>(null);
-  const [shake, setShake] = useState(false);
-  const shakeControls = useAnimation();
+    const shakeControls = useAnimation();
 
   useEffect(() => {
     const checkSession = async () => {
@@ -53,9 +52,9 @@ const SignUpPage: React.FC = () => {
       setError(validationError.message);
       toast.error("Sign up error", { description: validationError.message });
       setFieldError(validationError.field);
-      setShake(true);
+      
       shakeControls.start({ x: [0, -8, 8, -6, 6, -3, 3, 0] }, { type: "tween", duration: 0.45 });
-      setTimeout(() => setShake(false), 600);
+      
       return;
     }
 
@@ -72,9 +71,9 @@ const SignUpPage: React.FC = () => {
       setError(msg);
       toast.error("Sign up failed", { description: msg });
       setFieldError(null);
-      setShake(true);
+      
       shakeControls.start({ x: [0, -8, 8, -6, 6, -3, 3, 0] }, { type: "tween", duration: 0.45 });
-      setTimeout(() => setShake(false), 600);
+      
       return;
     }
 

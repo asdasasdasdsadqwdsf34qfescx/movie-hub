@@ -217,10 +217,10 @@ const Sidebar = () => {
         <div className={`mx-6 mb-6 p-6 rounded-[28px] border-[0.5px] ${colors.promoBg} space-y-5`}>
           <div className="space-y-1.5">
             <h3 className={`text-[16px] font-bold ${colors.text} text-center leading-[156%] tracking-[0.16px]`}>
-              Let's start!
+              {"Let's start!"}
             </h3>
             <p className={`text-[13px] font-medium ${colors.textMuted} text-center leading-[160%]`}>
-              Creating or adding new tasks couldn't be easier
+              {"Creating or adding new tasks couldn't be easier"}
             </p>
           </div>
           <Button className={`w-full h-12 ${colors.buttonBg} rounded-xl 

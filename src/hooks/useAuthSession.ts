@@ -15,7 +15,7 @@ export function useAuthSession() {
         const { data } = await supabase.auth.getSession();
         if (!mounted) return;
         setIsAuthenticated(!!data.session);
-      } catch (err) {
+      } catch {
         setIsAuthenticated(false);
       } finally {
         if (mounted) setLoading(false);

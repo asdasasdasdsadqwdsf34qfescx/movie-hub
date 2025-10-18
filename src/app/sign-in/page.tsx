@@ -16,8 +16,7 @@ const SignInPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [shake, setShake] = useState(false);
-  const shakeControls = useAnimation();
+    const shakeControls = useAnimation();
 
   useEffect(() => {
     const checkSession = async () => {
@@ -43,9 +42,9 @@ const SignInPage: React.FC = () => {
       const msg = friendlyAuthError(signInError, "sign_in");
       setError(msg);
       toast.error("Sign in failed", { description: msg });
-      setShake(true);
+      
       shakeControls.start({ x: [0, -8, 8, -6, 6, -3, 3, 0] }, { type: "tween", duration: 0.45 });
-      setTimeout(() => setShake(false), 600);
+      
       return;
     }
 
