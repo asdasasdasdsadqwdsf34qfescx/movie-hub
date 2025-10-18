@@ -90,17 +90,17 @@ const Sidebar = () => {
 
   const themeClasses = {
     dark: {
-      bg: "bg-[rgba(15,9,12,0.56)] border-[#e6e3e3]",
+      bg: "bg-[rgba(15,9,12,0.56)] border-white/10",
       blur: "backdrop-blur-[80px]",
       text: "text-white",
       textMuted: "text-white/56",
       textDim: "text-white/32",
-      activeBg: "bg-white/3 border-[#e6e3e3]",
+      activeBg: "bg-white/5 border-white/10",
       hoverBg: "hover:bg-white/5",
       divider: "bg-gradient-to-r from-transparent via-[#CC8B8B] to-transparent",
-      promoBg: "bg-[rgba(56,14,36,0.10)] border-[#e6e3e3]",
+      promoBg: "bg-[rgba(56,14,36,0.10)] border-white/10",
       buttonBg: "bg-gradient-to-b from-[#E0822D] to-[#E0822D]",
-      arrowBg: "bg-[rgba(15,9,12,0.40)] border-[#e6e3e3]",
+      arrowBg: "bg-[rgba(15,9,12,0.40)] border-white/10",
       onlineIndicator: "bg-[#7FBA7A]",
       offlineIndicator: "bg-[#250D0E] border-[#9F9595]",
     },
@@ -133,7 +133,7 @@ const Sidebar = () => {
         aria-hidden
       />
       <motion.aside
-        initial={{ x: -24, opacity: 0 }}
+        initial={false}
         animate={{ x: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 28 }}
         className={`fixed left-4 top-4 bottom-4 h-auto ${
@@ -141,7 +141,7 @@ const Sidebar = () => {
         }
           ${colors.bg} border-[0.5px] rounded-[28px]
           ${colors.blur} shadow-[0_64px_64px_-32px_rgba(41,15,0,0.56)]
-          transition-all duration-300 ease-in-out z-50 flex flex-col overflow-y-auto overflow-x-visible no-scrollbar pt-6 no-flicker`}
+          transition-all duration-300 ease-in-out z-50 hidden lg:flex flex-col overflow-hidden pt-6`}
       >
         <div className="px-6 mb-4">
           <div className="flex items-center gap-3">
@@ -177,7 +177,7 @@ const Sidebar = () => {
 
         <div className={`h-[1px] w-full ${colors.divider} opacity-32 mb-4`}></div>
 
-        <div className="px-6 flex-1 overflow-y-auto">
+        <div className="px-6 flex-1 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden overscroll-contain">
           <div
             className={`text-[11px] uppercase tracking-wider ${
               colors.textDim

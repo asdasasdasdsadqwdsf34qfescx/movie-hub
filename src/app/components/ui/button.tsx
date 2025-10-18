@@ -3,10 +3,12 @@ import * as React from "react";
 import { cn } from "@/lib/cn";
 
 type Variant = "default" | "ghost" | "outline";
+type Size = "sm" | "md" | "lg";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
   variant?: Variant;
+  size?: Size;
 }
 
 const variants: Record<Variant, string> = {
@@ -15,8 +17,14 @@ const variants: Record<Variant, string> = {
   outline: "bg-transparent border border-gray-700 text-inherit hover:bg-gray-800/40",
 };
 
+const sizes: Record<Size, string> = {
+  sm: "px-3 py-1.5 text-sm",
+  md: "px-4 py-2",
+  lg: "px-6 py-3 text-lg",
+};
+
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, type = "button", variant = "default", ...props }, ref) => {
+  ({ className, type = "button", variant = "default", size = "md", ...props }, ref) => {
     return (
       <button
         ref={ref}
@@ -24,7 +32,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           "inline-flex items-center justify-center whitespace-nowrap rounded font-semibold",
           "transition-colors duration-200 disabled:opacity-50 disabled:pointer-events-none",
-          "px-4 py-2",
+          sizes[size],
           variants[variant],
           className
         )}

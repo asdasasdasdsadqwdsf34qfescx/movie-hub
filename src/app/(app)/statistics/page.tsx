@@ -19,27 +19,14 @@ export default function Statistics() {
     return () => { mounted = false; };
   }, [router]);
 
-  const cards = [
-    { title: "Total Items", value: "128" },
-    { title: "Views", value: "12,450" },
-    { title: "Favorites", value: "64" },
-    { title: "Shares", value: "312" },
-    { title: "New this week", value: "18" },
-    { title: "Active users", value: "245" },
-  ];
-
   return (
     <div className="max-w-7xl mx-auto">
-      <h1 className="text-4xl font-bold mb-4">Statistics</h1>
-      <p className="text-lg opacity-70 mb-8">Overview of your usage metrics and trends.</p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {cards.map((card, idx) => (
-          <div key={idx} className="p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-[1.02]">
-            <h3 className="text-xl font-semibold mb-2">{card.title}</h3>
-            <p className="opacity-80 text-2xl font-bold">{card.value}</p>
-          </div>
-        ))}
+      <h1 className="text-4xl font-bold mb-4 text-center">Statistics</h1>
+      <div className="mb-6 p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-yellow-200">
+        <p className="font-medium">🚧 Under Development</p>
+        <p className="text-sm opacity-80 mt-1">This page is currently under development. Features will be available soon.</p>
       </div>
+      <p className="text-lg opacity-70 mb-8">Overview of your usage metrics and trends.</p>
     </div>
   );
 }

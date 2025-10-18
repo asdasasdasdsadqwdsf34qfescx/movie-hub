@@ -52,9 +52,9 @@ const SignInPage: React.FC = () => {
   };
 
   return (
-    <motion.div className="relative min-h-screen w-full flex items-center justify-center px-6 overflow-x-hidden no-flicker">
+    <motion.div className="relative min-h-screen w-full flex items-center justify-center px-6 overflow-x-hidden">
       <Background />
-      <motion.div className="relative z-10 w-full max-w-md bg-gray-900/90 border border-gray-700 rounded-xl shadow-2xl p-8 no-flicker" initial={{ opacity: 0, y: 16, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}>
+      <motion.div className="relative z-10 w-full max-w-md bg-gray-900/90 border border-gray-700 rounded-xl shadow-2xl p-8" initial={{ opacity: 0, y: 16, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}>
         <Link href="/" aria-label="Close and go home" className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-light transition-colors duration-200">&times;</Link>
         <motion.div animate={shakeControls}>
           <h1 className="text-2xl font-bold text-white mb-1 text-center">Sign In</h1>
@@ -69,7 +69,7 @@ const SignInPage: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
-              className={`${error ? "border-red-500/50 animate-inputPulse" : ""}`}
+              className={`${error ? "border-red-500/50 animate-pulse" : ""}`}
               aria-invalid={Boolean(error)}
               required
               autoFocus
@@ -81,7 +81,7 @@ const SignInPage: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              className={`${error ? "border-red-500/50 animate-inputPulse" : ""}`}
+              className={`${error ? "border-red-500/50 animate-pulse" : ""}`}
               aria-invalid={Boolean(error)}
               required
             />

@@ -69,7 +69,7 @@ const AuthModal: FC<AuthModalProps> = ({ open, onClose, onSignIn, onSignUp }) =>
               <Input
                 type="email"
                 placeholder="Email"
-                className={`${error ? 'border-red-500/50 animate-inputPulse' : ''}`}
+                className={`${error ? 'border-red-500/50 animate-pulse' : ''}`}
                 aria-invalid={Boolean(error)}
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -79,7 +79,7 @@ const AuthModal: FC<AuthModalProps> = ({ open, onClose, onSignIn, onSignUp }) =>
               <Input
                 type="password"
                 placeholder="Password"
-                className={`${error ? 'border-red-500/50 animate-inputPulse' : ''}`}
+                className={`${error ? 'border-red-500/50 animate-pulse' : ''}`}
                 aria-invalid={Boolean(error)}
                 value={password}
                 onChange={e => setPassword(e.target.value)}

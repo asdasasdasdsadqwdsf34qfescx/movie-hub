@@ -22,14 +22,14 @@ export function showErrorToast(message: string, title = "Something went wrong") 
       transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
       role="alert"
       aria-live="assertive"
-      className={`toast-surface ${t.visible ? "toast-enter" : "toast-exit"}`}
+      className="bg-gray-900/90 backdrop-blur-sm border border-gray-700 text-gray-200 rounded-xl px-3 py-2 shadow-2xl w-[340px] max-w-[calc(100vw-24px)]"
       data-type="error"
     >
       <div className="flex items-start gap-3">
         <div className="mt-0.5"><ErrorIcon /></div>
         <div className="min-w-0">
-          <p className="toast-title">{title}</p>
-          <p className="toast-message" title={message}>{message}</p>
+          <p className="text-sm font-bold text-rose-300 mb-0.5">{title}</p>
+          <p className="text-sm text-gray-100 leading-5 break-words" title={message}>{message}</p>
         </div>
         <button
           onClick={() => toast.dismiss(t.id)}
@@ -39,7 +39,7 @@ export function showErrorToast(message: string, title = "Something went wrong") 
           <X className="h-5 w-5" />
         </button>
       </div>
-      <div className="toast-progress" />
+      <div className="h-0.5 bg-rose-500 rounded-full mt-2 w-full" />
     </motion.div>
   ), baseOptions);
 }
@@ -53,14 +53,14 @@ export function showSuccessToast(message: string, title = "Success") {
       transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
       role="status"
       aria-live="polite"
-      className={`toast-surface toast-success ${t.visible ? "toast-enter" : "toast-exit"}`}
+      className="bg-gray-900/90 backdrop-blur-sm border border-gray-700 text-gray-200 rounded-xl px-3 py-2 shadow-2xl w-[340px] max-w-[calc(100vw-24px)]"
       data-type="success"
     >
       <div className="flex items-start gap-3">
         <CheckCircle2 className="h-5 w-5 text-emerald-400" />
         <div className="min-w-0">
-          <p className="toast-title toast-title-success">{title}</p>
-          <p className="toast-message toast-message-success" title={message}>{message}</p>
+          <p className="text-sm font-bold text-emerald-300 mb-0.5">{title}</p>
+          <p className="text-sm text-emerald-100 leading-5 break-words" title={message}>{message}</p>
         </div>
         <button
           onClick={() => toast.dismiss(t.id)}
@@ -70,7 +70,7 @@ export function showSuccessToast(message: string, title = "Success") {
           <X className="h-5 w-5" />
         </button>
       </div>
-      <div className="toast-progress toast-progress-success" />
+      <div className="h-0.5 bg-emerald-500 rounded-full mt-2 w-full" />
     </motion.div>
   ), baseOptions);
 }

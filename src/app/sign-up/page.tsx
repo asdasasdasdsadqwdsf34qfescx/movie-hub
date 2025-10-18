@@ -85,9 +85,9 @@ const SignUpPage: React.FC = () => {
   };
 
   return (
-    <motion.div className="relative min-h-screen w-full flex items-center justify-center px-6 overflow-x-hidden no-flicker">
+    <motion.div className="relative min-h-screen w-full flex items-center justify-center px-6 overflow-x-hidden">
       <Background />
-      <motion.div className="relative z-10 w-full max-w-md bg-gray-900/90 border border-gray-700 rounded-xl shadow-2xl p-8 no-flicker" initial={{ opacity: 0, y: 16, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}>
+      <motion.div className="relative z-10 w-full max-w-md bg-gray-900/90 border border-gray-700 rounded-xl shadow-2xl p-8" initial={{ opacity: 0, y: 16, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}>
         <Link href="/" aria-label="Close and go home" className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-light transition-colors duration-200">&times;</Link>
         <motion.div animate={shakeControls}>
           <h1 className="text-2xl font-bold text-white mb-1 text-center">Sign Up</h1>
@@ -101,7 +101,7 @@ const SignUpPage: React.FC = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Name"
-              className={`${fieldError === "name" ? "border-red-500/50 animate-inputPulse" : ""}`}
+              className={`${fieldError === "name" ? "border-red-500/50 animate-pulse" : ""}`}
               aria-invalid={fieldError === "name"}
               required
               autoFocus
@@ -127,7 +127,7 @@ const SignUpPage: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password (min 8 characters)"
-                className={`pr-12 ${fieldError === "password" ? "border-red-500/50 animate-inputPulse" : ""}`}
+                className={`pr-12 ${fieldError === "password" ? "border-red-500/50 animate-pulse" : ""}`}
                 aria-invalid={fieldError === "password"}
                 required
                 minLength={8}
@@ -150,7 +150,7 @@ const SignUpPage: React.FC = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm password"
-                className={`pr-12 ${fieldError === "confirmPassword" ? "border-red-500/50 animate-inputPulse" : ""}`}
+                className={`pr-12 ${fieldError === "confirmPassword" ? "border-red-500/50 animate-pulse" : ""}`}
                 aria-invalid={fieldError === "confirmPassword"}
                 required
                 minLength={8}
