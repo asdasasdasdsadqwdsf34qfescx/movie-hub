@@ -20,7 +20,7 @@ const Home = () => {
   }, [router]);
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="mx-auto">
       <h1 className="text-4xl font-bold mb-4">Home</h1>
       <p className="text-lg opacity-70 mb-8">Welcome! This page is protected. Light/Dark themes are supported.</p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

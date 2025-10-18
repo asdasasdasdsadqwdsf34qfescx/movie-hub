@@ -13,6 +13,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { supabase } from "@/services/supabaseClient";
 import { Button } from "./ui/button";
 import CollapseToggle from "./CollapseToggle";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 interface MenuItem {
   id: string;
@@ -30,7 +31,7 @@ const Sidebar = () => {
   const { theme } = useTheme();
   const router = useRouter();
   const pathname = usePathname();
-  const [isExpanded, setIsExpanded] = useState(true);
+  const { expanded: isExpanded, setExpanded: setIsExpanded } = useSidebar();
   const [isDashboardOpen, setIsDashboardOpen] = useState(true);
   const [userDisplay, setUserDisplay] = useState<string>("");
 
@@ -123,138 +124,141 @@ const Sidebar = () => {
   const colors = themeClasses[theme];
 
   return (
-    <motion.aside
-      initial={{ x: -24, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      transition={{ type: "spring", stiffness: 260, damping: 28 }}
-      className={`fixed left-4 top-4 bottom-4 h-auto ${
-        isExpanded ? "w-64" : "w-[104px]"
-      }
-        ${colors.bg} border-[0.5px] rounded-[28px]
-        ${colors.blur} shadow-[0_64px_64px_-32px_rgba(41,15,0,0.56)]
-        transition-all duration-300 ease-in-out z-50 flex flex-col overflow-y-auto overflow-x-visible no-scrollbar pt-6 no-flicker`}
-    >
-      {/* User Header */}
-      <div className="px-6 mb-4">
-        <div className="flex items-center gap-3">
-          {isExpanded && (
-            <div className="overflow-hidden">
-              <div
-                className={`text-[14px] font-medium ${colors.text} leading-5 break-all`}
-              >
-                {userDisplay}
-              </div>
-              <Button
-                onClick={handleSignOut}
-                variant="outline"
-                className={`mt-1 inline-flex items-center px-2.5 py-1 text-xs rounded ${
-                  theme === "dark"
-                    ? "border-white/20 text-white/80 hover:bg-white/10"
-                    : "border-[#f00707] text-[#242220]/80 hover:bg-black/5"
-                } transition-colors`}
-              >
-                Log out
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Toggle Button */}
-      <CollapseToggle
-        expanded={isExpanded}
-        onToggle={() => setIsExpanded(!isExpanded)}
-        theme={theme}
-        surfaceClass={colors.arrowBg}
+    <>
+      <div
+        className={`fixed inset-0 bg-black/40 backdrop-blur-[2px] lg:hidden transition-opacity duration-300 ${
+          isExpanded ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={() => setIsExpanded(false)}
+        aria-hidden
       />
-
-      {/* Divider */}
-      <div className={`h-[1px] w-full ${colors.divider} opacity-32 mb-4`}></div>
-
-      {/* Main Menu */}
-      <div className="px-6 flex-1 overflow-y-auto">
-        <div
-          className={`text-[11px] uppercase tracking-wider ${
-            colors.textDim
-          } mb-2 ${isExpanded ? "px-5" : "text-center"}`}
-        >
-          Main
-        </div>
-
-        <div className="space-y-1">
-          {menuItems.map((item) => (
-            <motion.div key={item.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
-              <Button
-                onClick={() => router.push(`/${item.id}`)}
-                variant="ghost"
-                className={`w-full flex items-center gap-4 ${
-                  isExpanded ? "px-5" : "justify-center"
-                } py-4 
-                  rounded-xl transition-all duration-200
-                  ${
-                    pathname?.startsWith(`/${item.id}`)
-                      ? `${colors.activeBg} border-[0.5px]`
-                      : colors.hoverBg
-                  }`}
-              >
-                <item.Icon
-                  className="w-6 h-6"
-                  color={theme === "dark" ? "white" : "#242220"}
-                  strokeWidth={2}
-                />
-                {isExpanded && (
-                  <>
-                    <span
-                      className={`flex-1 text-left text-[14px] font-medium ${
-                        pathname?.startsWith(`/${item.id}`)
-                          ? colors.text
-                          : colors.textMuted
-                      }`}
-                    >
-                      {item.label}
-                    </span>
-                    {item.subItems && (
-                      <ChevronUp
-                        className={`w-6 h-6 transition-transform duration-200 ${
-                          isDashboardOpen ? "rotate-180" : ""
-                        }`}
-                        color={
-                          theme === "dark"
-                            ? "rgba(255,255,255,0.32)"
-                            : "rgba(36,34,32,0.48)"
-                        }
-                      />
-                    )}
-                  </>
-                )}
-              </Button>
-
-              {item.subItems && isDashboardOpen && isExpanded && (
-                <div className="ml-12 mt-1 space-y-2 border-l-[1px] border-white/16 pl-3">
-                  {item.subItems.map((subItem, idx) => (
-                    <Button
-                      key={idx}
-                      variant="ghost"
-                      className={`w-full text-left px-4 py-2 rounded-lg text-[12px] font-medium
-                        ${
-                          subItem.label === "Statistic"
-                            ? `${colors.activeBg} ${colors.text} border-[0.5px]`
-                            : `${colors.textMuted} ${colors.hoverBg}`
-                        }
-                        transition-all duration-200`}
-                    >
-                      {subItem.label}
-                    </Button>
-                  ))}
+      <motion.aside
+        initial={{ x: -24, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 260, damping: 28 }}
+        className={`fixed left-4 top-4 bottom-4 h-auto ${
+          isExpanded ? "w-64" : "w-[104px]"
+        }
+          ${colors.bg} border-[0.5px] rounded-[28px]
+          ${colors.blur} shadow-[0_64px_64px_-32px_rgba(41,15,0,0.56)]
+          transition-all duration-300 ease-in-out z-50 flex flex-col overflow-y-auto overflow-x-visible no-scrollbar pt-6 no-flicker`}
+      >
+        <div className="px-6 mb-4">
+          <div className="flex items-center gap-3">
+            {isExpanded && (
+              <div className="overflow-hidden">
+                <div
+                  className={`text-[14px] font-medium ${colors.text} leading-5 break-all`}
+                >
+                  {userDisplay}
                 </div>
-              )}
-            </motion.div>
-          ))}
+                <Button
+                  onClick={handleSignOut}
+                  variant="outline"
+                  className={`mt-1 inline-flex items-center px-2.5 py-1 text-xs rounded ${
+                    theme === "dark"
+                      ? "border-white/20 text-white/80 hover:bg-white/10"
+                      : "border-[#f00707] text-[#242220]/80 hover:bg-black/5"
+                  } transition-colors`}
+                >
+                  Log out
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
 
+        <CollapseToggle
+          expanded={isExpanded}
+          onToggle={() => setIsExpanded(!isExpanded)}
+          theme={theme}
+          surfaceClass={colors.arrowBg}
+        />
 
-    </motion.aside>
+        <div className={`h-[1px] w-full ${colors.divider} opacity-32 mb-4`}></div>
+
+        <div className="px-6 flex-1 overflow-y-auto">
+          <div
+            className={`text-[11px] uppercase tracking-wider ${
+              colors.textDim
+            } mb-2 ${isExpanded ? "px-5" : "text-center"}`}
+          >
+            Main
+          </div>
+
+          <div className="space-y-1">
+            {menuItems.map((item) => (
+              <motion.div key={item.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
+                <Button
+                  onClick={() => router.push(`/${item.id}`)}
+                  variant="ghost"
+                  className={`w-full flex items-center gap-4 ${
+                    isExpanded ? "px-5" : "justify-center"
+                  } py-4
+                    rounded-xl transition-all duration-200
+                    ${
+                      pathname?.startsWith(`/${item.id}`)
+                        ? `${colors.activeBg} border-[0.5px]`
+                        : colors.hoverBg
+                    }`}
+                >
+                  <item.Icon
+                    className="w-6 h-6"
+                    color={theme === "dark" ? "white" : "#242220"}
+                    strokeWidth={2}
+                  />
+                  {isExpanded && (
+                    <>
+                      <span
+                        className={`flex-1 text-left text-[14px] font-medium ${
+                          pathname?.startsWith(`/${item.id}`)
+                            ? colors.text
+                            : colors.textMuted
+                        }`}
+                      >
+                        {item.label}
+                      </span>
+                      {item.subItems && (
+                        <ChevronUp
+                          className={`w-6 h-6 transition-transform duration-200 ${
+                            isDashboardOpen ? "rotate-180" : ""
+                          }`}
+                          color={
+                            theme === "dark"
+                              ? "rgba(255,255,255,0.32)"
+                              : "rgba(36,34,32,0.48)"
+                          }
+                        />
+                      )}
+                    </>
+                  )}
+                </Button>
+
+                {item.subItems && isDashboardOpen && isExpanded && (
+                  <div className="ml-12 mt-1 space-y-2 border-l-[1px] border-white/16 pl-3">
+                    {item.subItems.map((subItem, idx) => (
+                      <Button
+                        key={idx}
+                        variant="ghost"
+                        className={`w-full text-left px-4 py-2 rounded-lg text-[12px] font-medium
+                          ${
+                            subItem.label === "Statistic"
+                              ? `${colors.activeBg} ${colors.text} border-[0.5px]`
+                              : `${colors.textMuted} ${colors.hoverBg}`
+                          }
+                          transition-all duration-200`}
+                      >
+                        {subItem.label}
+                      </Button>
+                    ))}
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.aside>
+    </>
   );
 };
 
