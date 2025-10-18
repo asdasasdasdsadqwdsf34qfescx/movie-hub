@@ -219,7 +219,7 @@ const Sidebar = () => {
                       {item.subItems && (
                         <ChevronUp
                           className={`w-6 h-6 transition-transform duration-200 ${
-                            isDashboardOpen ? "rotate-180" : ""
+                            isExpanded ? "rotate-180" : ""
                           }`}
                           color={
                             theme === "dark"
@@ -232,7 +232,7 @@ const Sidebar = () => {
                   )}
                 </Button>
 
-                {item.subItems && isDashboardOpen && isExpanded && (
+                {item.subItems && isExpanded && (
                   <div className="ml-12 mt-1 space-y-2 border-l-[1px] border-white/16 pl-3">
                     {item.subItems.map((subItem, idx) => (
                       <Button
