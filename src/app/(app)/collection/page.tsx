@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/services/supabaseClient";
 import {
@@ -41,7 +41,6 @@ export default function Collection() {
   const router = useRouter();
   const [userId, setUserId] = useState<string | null>(null);
   const [movies, setMovies] = useState<MovieRow[]>([]);
-  const [loading, setLoading] = useState(true);
 
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -80,7 +79,6 @@ export default function Collection() {
     if (!userId) return;
     let active = true;
     (async () => {
-      setLoading(true);
       const { data, error } = await supabase
         .from("movies")
         .select(
@@ -94,7 +92,6 @@ export default function Collection() {
       } else {
         setMovies((data as MovieRow[]) ?? []);
       }
-      setLoading(false);
     })();
     return () => {
       active = false;

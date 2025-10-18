@@ -31,7 +31,6 @@ const Sidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { expanded: isExpanded, setExpanded: setIsExpanded } = useSidebar();
-  const [isDashboardOpen, setIsDashboardOpen] = useState(true);
   const [userDisplay, setUserDisplay] = useState<string>("");
 
   useEffect(() => {
