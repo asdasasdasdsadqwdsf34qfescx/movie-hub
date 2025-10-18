@@ -219,7 +219,7 @@ export default function Collection() {
 
   return (
     <div className="w-full min-h-screen pl-2 pr-8 py-4 sm:pl-4 sm:pr-12 lg:pl-6 lg:pr-16 overflow-x-hidden">
-            <h1 className="text-4xl font-bold mb-4 ">Collection</h1>
+            <h1 className="text-4xl font-bold mb-4 text-center">Collection</h1>
 
       <div className="grid w-full max-w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
         {/* Add New Card */}
