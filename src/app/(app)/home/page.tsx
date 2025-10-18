@@ -84,8 +84,6 @@ const Home = () => {
 const Row = React.memo(({ title, items }: { title: string; items: MovieRow[] }) => {
     const { expanded } = useSidebar();
     
-    if (!items.length) return null;
-    
     const renderCard = useCallback((m: MovieRow, key: string | number) => (
       <div
         key={key}
@@ -120,6 +118,8 @@ const Row = React.memo(({ title, items }: { title: string; items: MovieRow[] }) 
       expanded ? "lg:pl-[280px]" : "lg:pl-[136px]", 
       [expanded]
     );
+    
+    if (!items.length) return null;
 
     return (
       <div>
@@ -142,6 +142,8 @@ const Row = React.memo(({ title, items }: { title: string; items: MovieRow[] }) 
       </div>
     );
   });
+
+  Row.displayName = 'Row';
 
   return (
    <div className="pt-4 mx-auto">
