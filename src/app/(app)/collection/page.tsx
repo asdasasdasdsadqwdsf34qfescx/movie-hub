@@ -12,6 +12,11 @@ import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { motion, AnimatePresence } from "framer-motion";
+
+const GENRES = [
+  "Drama","Fantasy","Horror","Comedy","Romance","Sci-Fi","Thriller","Adventure","Short","Action","Animation","Family",
+] as const;
 
 type MovieRow = {
   id?: number;
@@ -41,6 +46,7 @@ export default function Collection() {
   const router = useRouter();
   const [userId, setUserId] = useState<string | null>(null);
   const [movies, setMovies] = useState<MovieRow[]>([]);
+  const [loadingMovies, setLoadingMovies] = useState(true);
 
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -53,6 +59,12 @@ export default function Collection() {
     name: string;
   } | null>(null);
   const { theme } = useTheme();
+
+  const [filterGenre, setFilterGenre] = useState<string>("");
+  const [filterYear, setFilterYear] = useState<string>("");
+  const [filterRating, setFilterRating] = useState<string>("");
+  const currentYear = new Date().getFullYear();
+  const yearOptions = Array.from({ length: currentYear - 1950 + 1 }, (_, i) => String(currentYear - i));
 
   useEffect(() => {
     let mounted = true;
@@ -78,25 +90,40 @@ export default function Collection() {
   useEffect(() => {
     if (!userId) return;
     let active = true;
+    setLoadingMovies(true);
     (async () => {
-      const { data, error } = await supabase
+      let q = supabase
         .from("movies")
         .select(
           "id, created_at, name, poster, watchedCount, genres, year, runtime, isFavorite, watchedDates, userId, imdbRating, imdbVotes, released"
         )
-        .eq("userId", userId)
-        .order("created_at", { ascending: false });
+        .eq("userId", userId);
+
+      if (filterGenre) {
+        q = q.contains("genres", [filterGenre]);
+      }
+      if (filterYear) {
+        const yr = parseInt(filterYear, 10);
+        if (Number.isFinite(yr)) q = q.eq("year", yr);
+      }
+      if (filterRating) {
+        const r = parseFloat(filterRating);
+        if (Number.isFinite(r)) q = q.gte("imdbRating", r);
+      }
+
+      const { data, error } = await q.order("created_at", { ascending: false });
       if (!active) return;
       if (error) {
         setMovies([]);
       } else {
         setMovies((data as MovieRow[]) ?? []);
       }
+      setLoadingMovies(false);
     })();
     return () => {
       active = false;
     };
-  }, [userId]);
+  }, [userId, filterGenre, filterYear, filterRating]);
 
   useEffect(() => {
     if (!open) return;
@@ -218,16 +245,83 @@ export default function Collection() {
   };
 
   return (
-    <div className="w-full min-h-screen pl-2 pr-8 py-4 sm:pl-4 sm:pr-12 lg:pl-6 lg:pr-16 overflow-x-hidden">
-            <h1 className="text-4xl font-bold mb-4 text-center">Collection</h1>
+    <div className="w-full min-h-screen pl-2 py-4 sm:pl-4 sm:pr-12 lg:pl-6 lg:pr-16 overflow-x-hidden">
 
-      <div className="grid w-full max-w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
+      <motion.div 
+        className={`mb-4 rounded-2xl border ${theme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-neutral-50 border-neutral-200'} p-4 sm:p-5`}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.1 }}
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 min-w-0">
+          <select
+            value={filterGenre}
+            onChange={(e) => setFilterGenre(e.target.value)}
+            size={1}
+            className={`min-w-0 w-full px-4 py-3 sm:py-2.5 rounded-lg border text-base sm:text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 ${theme === 'dark' ? 'bg-neutral-900 text-white border-neutral-700 hover:border-neutral-600 focus:ring-neutral-500 focus:ring-offset-neutral-900' : 'bg-white text-neutral-800 border-neutral-300 hover:border-neutral-400 focus:ring-blue-500 focus:ring-offset-white'}`}
+            style={{ maxHeight: '200px', overflowY: 'auto' }}
+          >
+            <option value="">All Genres</option>
+            {GENRES.map((g) => (
+              <option key={g} value={g}>{g}</option>
+            ))}
+          </select>
+          <select
+            value={filterYear}
+            onChange={(e) => setFilterYear(e.target.value)}
+            size={1}
+            className={`min-w-0 w-full px-4 py-3 sm:py-2.5 rounded-lg border text-base sm:text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 ${theme === 'dark' ? 'bg-neutral-900 text-white border-neutral-700 hover:border-neutral-600 focus:ring-neutral-500 focus:ring-offset-neutral-900' : 'bg-white text-neutral-800 border-neutral-300 hover:border-neutral-400 focus:ring-blue-500 focus:ring-offset-white'}`}
+            style={{ maxHeight: '200px', overflowY: 'auto' }}
+          >
+            <option value="">Select Year</option>
+            {yearOptions.map((y) => (
+              <option key={y} value={y}>{y}</option>
+            ))}
+          </select>
+          <select
+            value={filterRating}
+            onChange={(e) => setFilterRating(e.target.value)}
+            size={1}
+            className={`min-w-0 w-full px-4 py-3 sm:py-2.5 rounded-lg border text-base sm:text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 ${theme === 'dark' ? 'bg-neutral-900 text-white border-neutral-700 hover:border-neutral-600 focus:ring-neutral-500 focus:ring-offset-neutral-900' : 'bg-white text-neutral-800 border-neutral-300 hover:border-neutral-400 focus:ring-blue-500 focus:ring-offset-white'}`}
+            style={{ maxHeight: '200px', overflowY: 'auto' }}
+          >
+            <option value="">All Ratings</option>
+            {Array.from({ length: 10 }, (_, i) => String(i + 1)).map((r) => (
+              <option key={r} value={r}>≥ {r}.0</option>
+            ))}
+          </select>
+          <div className="sm:col-span-2 lg:col-span-1">
+            <Button
+              variant="outline"
+              onClick={() => { setFilterGenre(""); setFilterYear(""); setFilterRating(""); }}
+              className={`${theme === 'dark' ? 'border-neutral-700 hover:bg-neutral-800 text-white' : 'border-neutral-300 hover:bg-neutral-100 text-neutral-800'} w-full h-12 sm:h-10 text-base sm:text-sm font-medium transition-colors`}
+            >
+              Clear Filters
+            </Button>
+          </div>
+        </div>
+      </motion.div>
+
+      <motion.div 
+        className="grid w-full max-w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
         {/* Add New Card */}
-        <div
+        <motion.div
           onClick={() => setOpen(true)}
-          className={`min-w-0 max-w-full p-0 rounded-2xl bg-white/5 backdrop-blur-sm border border-neutral-700/70 hover:bg-white/10 transition-transform duration-300 hover:-translate-y-1 overflow-hidden cursor-pointer border-dashed border-2 hover:border-neutral-600 ${
+          className={`min-w-0 max-w-full p-0 rounded-2xl bg-white/5 backdrop-blur-sm border border-neutral-700/70 hover:bg-white/10 overflow-hidden cursor-pointer border-dashed border-2 hover:border-neutral-600 ${
             theme === "dark" ? "text-white" : ""
           }`}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          whileHover={{ 
+            y: -8,
+            transition: { duration: 0.2 }
+          }}
+          whileTap={{ scale: 0.98 }}
         >
           <div className="h-48 sm:h-64 flex items-center justify-center">
             <div className="text-center">
@@ -239,13 +333,42 @@ export default function Collection() {
               Click to add a movie
             </p>
           </div>
-        </div>
-        {movies.map((m) => (
-          <div
+        </motion.div>
+        {loadingMovies && (
+          <>
+            {[0,1,2,3,4,5,6].map((i) => (
+              <div
+                key={`skeleton-${i}`}
+                className={`min-w-0 max-w-full p-0 rounded-2xl border overflow-hidden ${theme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-neutral-50 border-neutral-200'} ${i < 2 ? '' : i < 4 ? 'hidden sm:block' : i < 6 ? 'hidden md:block' : 'hidden lg:block'}`}
+                aria-hidden
+              >
+                <div className={`${theme === 'dark' ? 'bg-white/10' : 'bg-neutral-200'} w-full h-48 sm:h-64 animate-pulse`} />
+                <div className="p-3 sm:p-4">
+                  <div className={`${theme === 'dark' ? 'bg-white/10' : 'bg-neutral-200'} h-5 sm:h-6 w-3/4 rounded mb-2 animate-pulse`} />
+                  <div className={`${theme === 'dark' ? 'bg-white/10' : 'bg-neutral-200'} h-4 w-1/2 rounded animate-pulse`} />
+                </div>
+              </div>
+            ))}
+          </>
+        )}
+        {!loadingMovies && movies.map((m, index) => (
+          <motion.div
             key={m.id}
-            className={`relative group min-w-0 max-w-full p-0 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-transform duration-300 hover:-translate-y-1 overflow-hidden ${
+            className={`relative group min-w-0 max-w-full p-0 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 overflow-hidden ${
               theme === "dark" ? "text-white" : ""
             }`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ 
+              duration: 0.5, 
+              delay: 0.4 + (index * 0.1),
+              ease: "easeOut"
+            }}
+            whileHover={{ 
+              y: -8,
+              transition: { duration: 0.2 }
+            }}
+            whileTap={{ scale: 0.98 }}
           >
             <button
               onClick={() => {
@@ -281,27 +404,29 @@ export default function Collection() {
                 {m.runtime ? ` • ${m.runtime} min` : ""}
               </p>
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
-      <Dialog
-        open={open}
-        onOpenChange={(isOpen) => {
-          setOpen(isOpen);
-          if (!isOpen) {
-            setQuery("");
-            setResults([]);
-          }
-        }}
-      >
-        <DialogContent
-          className={`max-w-[95vw] sm:max-w-[600px] lg:max-w-[900px] xl:max-w-[1200px] max-h-[calc(100vh-100px)] sm:max-h-[calc(100vh-200px)] overflow-hidden ${
-            theme === "dark"
-              ? "bg-neutral-900 border-neutral-700 text-white"
-              : "bg-white border-neutral-200 text-neutral-900"
-          }`}
-        >
+      <AnimatePresence>
+        {open && (
+          <Dialog
+            open={open}
+            onOpenChange={(isOpen) => {
+              setOpen(isOpen);
+              if (!isOpen) {
+                setQuery("");
+                setResults([]);
+              }
+            }}
+          >
+            <DialogContent
+              className={`max-w-[95vw] sm:max-w-[600px] lg:max-w-[900px] xl:max-w-[1200px] max-h-[calc(100vh-100px)] sm:max-h-[calc(100vh-200px)] overflow-hidden ${
+                theme === "dark"
+                  ? "bg-neutral-900 border-neutral-700 text-white"
+                  : "bg-white border-neutral-200 text-neutral-900"
+              }`}
+            >
           <DialogHeader className="shrink-0">
             <DialogTitle
               className={theme === "dark" ? "text-white" : "text-neutral-900"}
@@ -328,13 +453,22 @@ export default function Collection() {
               )}
               {!searching &&
                 results.map((r, idx) => (
-                  <div
+                  <motion.div
                     key={`${r.imdbID}-${idx}`}
                     className={`flex flex-col gap-3 p-3 rounded-lg border transition ${
                       theme === "dark"
                         ? "bg-white/5 border-white/10 hover:bg-white/10"
                         : "bg-neutral-50 border-neutral-200 hover:bg-neutral-100"
                     }`}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ 
+                      duration: 0.3, 
+                      delay: idx * 0.05,
+                      ease: "easeOut"
+                    }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
                     {r.Poster && r.Poster !== "N/A" ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -369,7 +503,7 @@ export default function Collection() {
                     >
                       Save
                     </Button>
-                  </div>
+                  </motion.div>
                 ))}
               {!searching && results.length === 0 && query && (
                 <div className="opacity-60 col-span-full text-center py-4">
@@ -380,16 +514,20 @@ export default function Collection() {
           </div>
         </DialogContent>
       </Dialog>
+        )}
+      </AnimatePresence>
 
-      <Dialog
-        open={confirmOpen}
-        onOpenChange={(v) => {
-          if (!v) {
-            setConfirmOpen(false);
-            setPendingDelete(null);
-          }
-        }}
-      >
+      <AnimatePresence>
+        {confirmOpen && (
+          <Dialog
+            open={confirmOpen}
+            onOpenChange={(v) => {
+              if (!v) {
+                setConfirmOpen(false);
+                setPendingDelete(null);
+              }
+            }}
+          >
         <DialogContent
           className={`max-w-md ${
             theme === "dark"
@@ -445,6 +583,8 @@ export default function Collection() {
           </div>
         </DialogContent>
       </Dialog>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
