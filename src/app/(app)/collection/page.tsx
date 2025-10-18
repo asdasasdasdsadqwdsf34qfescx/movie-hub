@@ -411,7 +411,7 @@ export default function Collection() {
               }`}
             >
               Are you sure you want to delete{" "}
-              <span className="font-semibold">„{pendingDelete?.name}"</span>?
+              <span className="font-semibold">&ldquo;{pendingDelete?.name}&rdquo;</span>?
               This action cannot be undone.
             </p>
             <div className="flex justify-end gap-3">
